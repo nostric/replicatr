@@ -1,5 +1,0 @@
-[workspace]
-members = [
-    "src/replicatr",
-]
-resolver = "2"

@@ -1,1 +1,0 @@
-pub static OWNER: &str = "";
