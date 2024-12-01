@@ -129,6 +129,7 @@ func main() {
 		config.PrintHelp(cfg, os.Stderr)
 		os.Exit(0)
 	}
+	log.I.S(cfg)
 	c, cancel := context.Cancel(context.Bg())
 	interrupt.AddHandler(cancel)
 	if len(os.Args) > 1 {

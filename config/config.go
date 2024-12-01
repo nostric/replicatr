@@ -1,6 +1,7 @@
 package config
 
 import (
+	_ "embed"
 	"fmt"
 	"io"
 	"os"
@@ -17,8 +18,12 @@ import (
 	"realy.lol/sha256"
 )
 
+//go:embed version
+var Version string
+
 type C struct {
-	AppName        S             `env:"APP_NAME" default:"realy"`
+	AppName        S             `env:"APP_NAME" default:"replicatr"`
+	Description    S             `env:"APP_DESCRIPTION" default:"a nostr relay that uses an Internet Computer canister as a shared event store"`
 	Profile        S             `env:"PROFILE" usage:"root path for all other path configurations (based on APP_NAME and OS specific location)"`
 	Listen         S             `env:"LISTEN" default:"0.0.0.0" usage:"network listen address"`
 	Port           N             `env:"PORT" default:"3334" usage:"port to listen on"`
@@ -120,38 +125,42 @@ func PrintEnv(cfg *C, printer io.Writer) {
 // values to a provided io.Writer (usually os.Stderr or os.Stdout).
 func PrintHelp(cfg *C, printer io.Writer) {
 	_, _ = fmt.Fprintf(printer,
-		"Environment variables that configure %s:\n\n", cfg.AppName)
-	env.Usage(cfg, printer, &env.Options{SliceSep: ","})
-	_, _ = fmt.Fprintf(printer,
-		`CLI parameter 'help' also prints this information
+		`%s -- %s
 
-.env file found at the ROOT_DIR/PROFILE path will be automatically loaded for configuration.
+	CLI parameter 'help' also prints this information
 
-set these two variables for a custom load path, this file will be created on first startup.
+	.env file found at the ROOT_DIR/PROFILE path will be automatically loaded for configuration.
 
-environment overrides it and you can also edit the file to set configuration options
+	set these two variables for a custom load path, this file will be created on first startup.
 
-use the parameter 'env' to print out the current configuration to the terminal
+	environment overrides it and you can also edit the file to set configuration options
 
-set the environment using
+	use the parameter 'env' to print out the current configuration to the terminal
 
-	%s env > %s/%s/.env`, os.Args[0], cfg.Profile, cfg.Profile)
+	set the environment using
+
+		%s env > %s/%s/.env
+
+`, cfg.AppName, cfg.Description, cfg.Profile, cfg.Profile, Version)
 	_, _ = fmt.Fprintf(printer, `other commands you can invoke from command line args:
 
-%s pubkey
-	prints the public key being used by the relay for authentication, required for the canister
-	owner to authorize using "addrelay" or remove with "removerelay"
-
-%s addrelay <pubkey> <admin: true/false>
-	adds a relay pubkey to the list of relay public keys permitted to use the canister
-
-%s removerelay <pubkey>
-	removes a relay from the list of relay public keys permitted to use the canister
-
-%s getpermission
-	reports the access level of this relay to the canister
+	%s pubkey
+		prints the public key being used by the relay for authentication, required for the canister
+		owner to authorize using "addrelay" or remove with "removerelay"
+	
+	%s addrelay <pubkey> <admin: true/false>
+		adds a relay pubkey to the list of relay public keys permitted to use the canister
+	
+	%s removerelay <pubkey>
+		removes a relay from the list of relay public keys permitted to use the canister
+	
+	%s getpermission
+		reports the access level of this relay to the canister
 
 `, os.Args[0], os.Args[0], os.Args[0], os.Args[0])
-
+	_, _ = fmt.Fprintf(printer,
+		"Environment variables that configure %s:\n\n", cfg.AppName)
+	env.Usage(cfg, printer, &env.Options{SliceSep: ","})
+	_, _ = fmt.Fprintln(printer)
 	return
 }

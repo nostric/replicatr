@@ -5,6 +5,8 @@ go 1.23.3
 require (
 	github.com/aviate-labs/agent-go v0.5.2
 	github.com/aviate-labs/secp256k1 v0.0.0-5e6736a
+	github.com/pkg/profile v1.7.0
+	go-simpler.org/env v0.12.0
 	realy.lol v1.2.25
 )
 
@@ -15,7 +17,10 @@ require (
 	github.com/consensys/gnark-crypto v0.12.2-0.20240215234832-d72fcb379d3e // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.18.0 // indirect
+	github.com/felixge/fgprof v0.9.5 // indirect
 	github.com/fxamacker/cbor/v2 v2.6.0 // indirect
+	github.com/google/pprof v0.0.0-20241122213907-cbe949e5a41b // indirect
+	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/kopoli/go-terminal-size v0.0.0-20170219200355-5c97524c8b54 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

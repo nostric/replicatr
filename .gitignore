@@ -26,6 +26,7 @@
 !*.file
 !*.md
 !CHANGELOG.md
+!version
 # ...even if they are in subdirectories
 !*/
 !cmd/testnet/*
