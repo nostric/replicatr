@@ -8,11 +8,13 @@ import (
 )
 
 type (
-	B   = []byte
-	S   = string
-	E   = error
-	N   = int
-	Ctx = context.T
+	bo = bool
+	by = []byte
+	st = string
+	er = error
+	no = int
+	cx = context.T
+	fn = func()
 )
 
 var (

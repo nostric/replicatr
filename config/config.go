@@ -21,34 +21,35 @@ import (
 //go:embed version
 var Version string
 
+// C is the configuration items for replicatr.
 type C struct {
-	AppName        S             `env:"APP_NAME" default:"replicatr"`
-	Description    S             `env:"APP_DESCRIPTION" default:"a nostr relay that uses an Internet Computer canister as a shared event store"`
-	Profile        S             `env:"PROFILE" usage:"root path for all other path configurations (based on APP_NAME and OS specific location)"`
-	Listen         S             `env:"LISTEN" default:"0.0.0.0" usage:"network listen address"`
-	Port           N             `env:"PORT" default:"3334" usage:"port to listen on"`
-	AdminUser      S             `env:"ADMIN_USER" default:"admin" usage:"admin user"`
-	AdminPass      S             `env:"ADMIN_PASS" usage:"admin password"`
-	LogLevel       S             `env:"LOG_LEVEL" default:"info" usage:"debug level: fatal error warn info debug trace"`
-	DbLogLevel     S             `env:"DB_LOG_LEVEL" default:"info" usage:"debug level: fatal error warn info debug trace"`
-	AuthRequired   bool          `env:"AUTH_REQUIRED" default:"false" usage:"requires auth for all access"`
-	Owners         []S           `env:"OWNERS" usage:"list of npubs of users in hex format whose follow and mute list dictate accepting requests and events with AUTH_REQUIRED enabled - follows and follows follows are allowed to read/write, owners mutes events are rejected"`
-	DBSizeLimit    int           `env:"DB_SIZE_LIMIT" default:"0" usage:"the number of gigabytes (1,000,000,000 bytes) we want to keep the data store from exceeding, 0 means disabled"`
-	DBLowWater     int           `env:"DB_LOW_WATER" default:"60" usage:"the percentage of DBSizeLimit a GC run will reduce the used storage down to"`
-	DBHighWater    int           `env:"DB_HIGH_WATER" default:"80" usage:"the trigger point at which a GC run should start if exceeded"`
-	GCFrequency    int           `env:"GC_FREQUENCY" default:"3600" usage:"the frequency of checks of the current utilisation in minutes"`
-	Pprof          bool          `env:"PPROF" default:"false" usage:"enable pprof on 127.0.0.1:6060"`
-	MemLimit       int           `env:"MEMLIMIT" default:"250000000" usage:"set memory limit, default is 250Mb"`
-	NWC            S             `env:"NWC" usage:"NWC connection string for relay to interact with an NWC enabled wallet"`
-	EventStore     S             `env:"EVENTSTORE" default:"ic" usage:"type of event store ic/iconly/badger"`
-	CanisterAddr   S             `env:"CANISTER_ADDR" usage:"the address of a canister"`
-	CanisterId     S             `env:"CANISTER_ID" usage:"the id of a canister"`
-	CanisterSecret S             `env:"SECRET_KEY" usage:"secret key for canister access"`
-	PollFrequency  time.Duration `env:"POLL_FREQ" usage:"duration in 0h0m0s format between polls to canister to sync new events"`
-	PollOverlap    N             `env:"POLL_OVERLAP" usage:"multiple of POLL_FREQ to back-date queries for new events to account for sync latency"`
+	AppName        st            `env:"APP_NAME" default:"replicatr" json:"app_name,omitempty"`
+	Description    st            `env:"APP_DESCRIPTION" default:"a nostr relay that uses an Internet Computer canister as a shared event store" json:"description,omitempty"`
+	Profile        st            `env:"PROFILE" usage:"root path for all other path configurations (based on APP_NAME and OS specific location)" json:"profile,omitempty"`
+	Listen         st            `env:"LISTEN" default:"0.0.0.0" usage:"network listen address" json:"listen,omitempty"`
+	Port           no            `env:"PORT" default:"3334" usage:"port to listen on" json:"port,omitempty"`
+	AdminUser      st            `env:"ADMIN_USER" default:"admin" usage:"admin user" json:"admin_user,omitempty"`
+	AdminPass      st            `env:"ADMIN_PASS" usage:"admin password" json:"admin_pass,omitempty"`
+	LogLevel       st            `env:"LOG_LEVEL" default:"info" usage:"debug level: fatal error warn info debug trace" json:"log_level,omitempty"`
+	DbLogLevel     st            `env:"DB_LOG_LEVEL" default:"info" usage:"debug level: fatal error warn info debug trace" json:"db_log_level,omitempty"`
+	AuthRequired   bool          `env:"AUTH_REQUIRED" default:"false" usage:"requires auth for all access" json:"auth_required,omitempty"`
+	Owners         []st          `env:"OWNERS" usage:"list of npubs of users in hex format whose follow and mute list dictate accepting requests and events with AUTH_REQUIRED enabled - follows and follows follows are allowed to read/write, owners mutes events are rejected" json:"owners,omitempty"`
+	DBSizeLimit    int           `env:"DB_SIZE_LIMIT" default:"0" usage:"the number of gigabytes (1,000,000,000 bytes) we want to keep the data store from exceeding, 0 means disabled" json:"db_size_limit,omitempty"`
+	DBLowWater     int           `env:"DB_LOW_WATER" default:"60" usage:"the percentage of DBSizeLimit a GC run will reduce the used storage down to" json:"db_low_water,omitempty"`
+	DBHighWater    int           `env:"DB_HIGH_WATER" default:"80" usage:"the trigger point at which a GC run should start if exceeded" json:"db_high_water,omitempty"`
+	GCFrequency    int           `env:"GC_FREQUENCY" default:"3600" usage:"the frequency of checks of the current utilisation in minutes" json:"gc_frequency,omitempty"`
+	Pprof          bool          `env:"PPROF" default:"false" usage:"enable pprof on 127.0.0.1:6060" json:"pprof,omitempty"`
+	MemLimit       int           `env:"MEMLIMIT" default:"250000000" usage:"set memory limit, default is 250Mb" json:"mem_limit,omitempty"`
+	NWC            st            `env:"NWC" usage:"NWC connection string for relay to interact with an NWC enabled wallet" json:"nwc,omitempty"`
+	EventStore     st            `env:"EVENTSTORE" default:"ic" usage:"type of event store ic/iconly/badger" json:"event_store,omitempty"`
+	CanisterAddr   st            `env:"CANISTER_ADDR" usage:"the address of a canister" json:"canister_addr,omitempty"`
+	CanisterId     st            `env:"CANISTER_ID" usage:"the id of a canister" json:"canister_id,omitempty"`
+	CanisterSecret st            `env:"SECRET_KEY" usage:"secret key for canister access" json:"canister_secret,omitempty"`
+	PollFrequency  time.Duration `env:"POLL_FREQ" default:"5s" usage:"duration in 0h0m0s format between polls to canister to sync new events" json:"poll_frequency,omitempty"`
+	PollOverlap    no            `env:"POLL_OVERLAP" usage:"multiple of POLL_FREQ to back-date queries for new events to account for sync latency" json:"poll_overlap,omitempty"`
 }
 
-func New() (cfg *C, err E) {
+func New() (cfg *C, err er) {
 	cfg = &C{}
 	if err = env.Load(cfg, nil); chk.T(err) {
 		return
@@ -65,7 +66,7 @@ func New() (cfg *C, err E) {
 		if err = env.Load(cfg, &env.Options{Source: e}); chk.E(err) {
 			return
 		}
-		var owners []S
+		var owners []st
 		// remove empties if any
 		for _, o := range cfg.Owners {
 			if len(o) == sha256.Size*2 {
@@ -105,7 +106,7 @@ func PrintEnv(cfg *C, printer io.Writer) {
 	for i := 0; i < t.NumField(); i++ {
 		k := t.Field(i).Tag.Get("env")
 		v := reflect.ValueOf(*cfg).Field(i).Interface()
-		var val S
+		var val st
 		switch v.(type) {
 		case string:
 			val = v.(string)
